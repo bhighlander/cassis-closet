@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom"
 import Login from "../auth/Login";
-import Register from "../auth/Register";
+import { Register } from "../auth/Register";
 
 export const ApplicationViews = ({ token, setToken }) => {
     const navigate = useNavigate();

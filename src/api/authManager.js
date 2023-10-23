@@ -1,7 +1,7 @@
 import { API_URL } from '../utils/apiConfig';
 
 export const registerUser = async (newUser) => {
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         body: JSON.stringify(newUser),
         headers: {
@@ -12,9 +12,9 @@ export const registerUser = async (newUser) => {
 }
 
 export const loginUser = async (user) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
-        body: JSON.stringify(user),
+        body: JSON.stringify({username: user.username, password: user.password}),
         headers: {
             'Content-Type': 'application/json'
         }
