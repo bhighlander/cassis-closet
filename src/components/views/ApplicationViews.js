@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom"
 import { Login } from "../auth/Login";
 import { Register } from "../auth/Register";
+import { CreateArticleForm } from "../forms/ArticleForm";
 
 export const ApplicationViews = ({ token, setToken }) => {
     const navigate = useNavigate();
@@ -18,8 +19,8 @@ export const ApplicationViews = ({ token, setToken }) => {
             <>
             <Routes>
                 <Route>
-                    <Route path="/login" element={<Login setToken={setToken} />} />
-                    <Route path="/register" element={<Register setToken={setToken} />} />
+                    <Route path="/login" element={<Login token={token} setToken={setToken} />} />
+                    <Route path="/register" element={<Register token={token} setToken={setToken} />} />
                 </Route>
             </Routes>
             </>
@@ -30,8 +31,12 @@ export const ApplicationViews = ({ token, setToken }) => {
         <>
         <Routes>
             <Route>
-                <Route path="/login" element={<Login setToken={setToken} />} />
-                <Route path="/register" element={<Register setToken={setToken} />} />
+                <Route path="/login" element={<Login token={token} setToken={setToken} />} />
+                <Route path="/register" element={<Register token={token} setToken={setToken} />} />
+            </Route>
+            <Route path="/articles">
+                {/* <Route path="/" element={<ArticleList />} /> */}
+                <Route path="create" element={<CreateArticleForm token={token} setToken={setToken} />} />
             </Route>
         </Routes>
         </>
