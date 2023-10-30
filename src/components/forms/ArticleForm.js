@@ -1,17 +1,18 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createArticle } from "../../api/articleManager"
-import { Button, FormControl, MenuItem, Select } from "@mui/material"
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Button, MenuItem, Select } from "@mui/material"
+import { FormControl } from '@mui/base'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { Form } from "react-bootstrap"
 
-export const CreateArticleForm = ({ setToken }) => {
+export const CreateArticleForm = ({ token }) => {
     const navigate = useNavigate()
     const [article, setArticle] = useState({
-        color: "",
-        season: "",
-        type: "",
-        img_dir: "",
-        owner: "",
+        color: "1",
+        season: "1",
+        type: "1",
+        image: null,
     })
     const [selectedColor, setSelectedColor] = useState("")
     const [selectedSeason, setSelectedSeason] = useState("")
@@ -20,23 +21,25 @@ export const CreateArticleForm = ({ setToken }) => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        createArticle(article)
+        createArticle(article, token)
             .then(() => {
                 navigate('/')
             })
     }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleImageChange = (e) => { 
         setArticle(prevState => ({
             ...prevState,
-            [name]: value
+            image: e.target.files[0]
         }));
     }
 
     return (
         <>
-            <FormControl onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
+                <h2>Create Article</h2>
+                <Form.Label htmlFor="color">Color</Form.Label>
+                <FormControl>
                 <Select
                     name="color"
                     onChange={e => setSelectedColor(e.target.value)}
@@ -56,6 +59,8 @@ export const CreateArticleForm = ({ setToken }) => {
                     <MenuItem value="white">White</MenuItem>
                     <MenuItem value="yellow">Yellow</MenuItem>
                 </Select>
+                </FormControl>
+                <FormControl>
                 <Select
                     name="season"
                     onChange={e => setSelectedSeason(e.target.value)}
@@ -68,6 +73,8 @@ export const CreateArticleForm = ({ setToken }) => {
                     <MenuItem value="fall">Fall</MenuItem>
                     <MenuItem value="winter">Winter</MenuItem>
                 </Select>
+                </FormControl>
+                <FormControl>
                 <Select
                     name="type"
                     onChange={e => setSelectedType(e.target.value)}
@@ -80,21 +87,26 @@ export const CreateArticleForm = ({ setToken }) => {
                     <MenuItem value="shoes">Shoes</MenuItem>
                     <MenuItem value="accessory">Accessory</MenuItem>
                 </Select>
+                </FormControl>
+                
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                     Upload File
                     <input
                         type="file"
                         hidden
+                        onChange={handleImageChange}
                     />
                 </Button>
+
                 <FormControl
-                    name="img_dir"
-                    onChange={handleChange}
-                    value={article.img_dir}
+                    name="image"
+                    onChange={handleImageChange}
+                    value={article.image}
                     required
                 />
+
                 <Button type="submit">Submit</Button>
-            </FormControl>
+            </Form>
         </>
     )
 }
