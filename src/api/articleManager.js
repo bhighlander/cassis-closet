@@ -1,12 +1,17 @@
 import { API_URL } from "../utils/apiConfig";
 
-export const createArticle = async (article) => {
-    const response = await fetch(`${API_URL}/articles`, {
+export const createArticle = async (article, token) => {
+    let formData = new FormData();
+    formData.append('image', article.image);
+    formData.append('color', article.color);
+    formData.append('season', article.season);
+    formData.append('type', article.type);
+
+    await fetch(`${API_URL}/articles`, {
         method: 'POST',
-        body: JSON.stringify(article),
+        body: formData,
         headers: {
-            'Content-Type': 'application/json'
+            'Authorization': `Token ${token}`
         }
     });
-    return await response.json();
 }
