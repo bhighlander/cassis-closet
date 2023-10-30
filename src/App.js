@@ -1,7 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import { ApplicationViews } from './components/views/ApplicationViews';
 import { useState } from 'react';
+import { Navbar } from './nav/Navbar';
 
 export const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -13,8 +13,8 @@ export const App = () => {
 
   return (
     <>
-      {/* <Navbar token={token} setToken={setNewToken} /> */}
       <ApplicationViews token={token} setToken={setNewToken} />
+      <Navbar token={token} setToken={setNewToken} />
     </>
   );
 }
