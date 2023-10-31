@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createArticle } from "../../api/articleManager"
-import { Button, MenuItem, Select } from "@mui/material"
+import { Autocomplete, Button, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 import { FormControl } from '@mui/base'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { Form } from "react-bootstrap"
+import { getAllColors } from "../../api/colorManager"
 
 export const CreateArticleForm = ({ token }) => {
     const navigate = useNavigate()
@@ -14,9 +15,19 @@ export const CreateArticleForm = ({ token }) => {
         type: "1",
         image: null,
     })
-    const [selectedColor, setSelectedColor] = useState("")
+    const [colors, setColors] = useState([])
+    const [selectedColor, setSelectedColor] = useState(null)
     const [selectedSeason, setSelectedSeason] = useState("")
     const [selectedType, setSelectedType] = useState("")
+
+    useEffect(() => {
+        getAllColors(token)
+            .then(colors => {
+                setColors(colors)
+            })
+
+    }, [article, token])
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -37,28 +48,17 @@ export const CreateArticleForm = ({ token }) => {
     return (
         <>
             <Form onSubmit={handleSubmit}>
-                <h2>Create Article</h2>
-                <Form.Label htmlFor="color">Color</Form.Label>
                 <FormControl>
-                <Select
-                    name="color"
-                    onChange={e => setSelectedColor(e.target.value)}
-                    value={selectedColor}
-                    required
-                >
-                    <MenuItem value="">Select a color</MenuItem>
-                    <MenuItem value="black">Black</MenuItem>
-                    <MenuItem value="blue">Blue</MenuItem>
-                    <MenuItem value="brown">Brown</MenuItem>
-                    <MenuItem value="green">Green</MenuItem>
-                    <MenuItem value="grey">Grey</MenuItem>
-                    <MenuItem value="orange">Orange</MenuItem>
-                    <MenuItem value="pink">Pink</MenuItem>
-                    <MenuItem value="purple">Purple</MenuItem>
-                    <MenuItem value="red">Red</MenuItem>
-                    <MenuItem value="white">White</MenuItem>
-                    <MenuItem value="yellow">Yellow</MenuItem>
-                </Select>
+                    <Autocomplete
+                        name="color"
+                        freeSolo
+                        value={colors}
+                        onChange={(e, newValue) => setSelectedColor(newValue)}
+                        inputValue={selectedColor ? selectedColor.label : ''}
+                        options={colors}
+                        style={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Color" variant="outlined" />}
+                    />
                 </FormControl>
                 <FormControl>
                 <Select
