@@ -10,13 +10,14 @@ import { getAllColors } from "../../api/colorManager"
 export const CreateArticleForm = ({ token }) => {
     const navigate = useNavigate()
     const [article, setArticle] = useState({
-        color: "1",
-        season: "1",
-        type: "1",
+        color: "",
+        season: "",
+        type: "",
         image: null,
     })
     const [colors, setColors] = useState([])
     const [selectedColor, setSelectedColor] = useState(null)
+    const [newColor, setNewColor] = useState("")
     const [selectedSeason, setSelectedSeason] = useState("")
     const [selectedType, setSelectedType] = useState("")
 
@@ -49,16 +50,34 @@ export const CreateArticleForm = ({ token }) => {
         <>
             <Form onSubmit={handleSubmit}>
                 <FormControl>
-                    <Autocomplete
-                        name="color"
-                        freeSolo
-                        value={colors}
-                        onChange={(e, newValue) => setSelectedColor(newValue)}
-                        inputValue={selectedColor ? selectedColor.label : ''}
-                        options={colors}
-                        style={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Color" variant="outlined" />}
-                    />
+                <Autocomplete
+                    name="color"
+                    freeSolo
+                    value={selectedColor}
+                    onChange={(event, newValue) => {
+                        if (typeof newValue === 'string') {
+                            setSelectedColor({
+                                label: newValue,
+                            });
+                        } else if (newValue && newValue.inputValue) {
+                            setSelectedColor({
+                                label: newValue.inputValue,
+                            });
+                        } else {
+                            setSelectedColor(newValue);
+                        }
+                    }}
+                    inputValue={newColor}
+                    onInputChange={(event, newInputValue) => {
+                        setNewColor(newInputValue);
+                    }}
+                    options={colors}
+                    getOptionLabel={(option) => {
+                        return typeof option === 'string' ? option : option.label;
+                    }}
+                    style={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Color" variant="outlined" />}
+                />
                 </FormControl>
                 <FormControl>
                 <Select
