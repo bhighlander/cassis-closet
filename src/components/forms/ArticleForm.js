@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createArticle } from "../../api/articleManager"
-import { Autocomplete, Button, InputLabel, MenuItem, Select, TextField } from "@mui/material"
-import { FormControl } from '@mui/base'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { createColor, getAllColors } from "../../api/colorManager"
+import { Autocomplete, Button, FormControl, MenuItem, Select, TextField } from "@mui/material"
 import { Form } from "react-bootstrap"
-import { getAllColors } from "../../api/colorManager"
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { createType, getAllTypes } from "../../api/typeManager"
 
 export const CreateArticleForm = ({ token }) => {
     const navigate = useNavigate()
@@ -16,27 +16,54 @@ export const CreateArticleForm = ({ token }) => {
         image: null,
     })
     const [colors, setColors] = useState([])
-    const [selectedColor, setSelectedColor] = useState(null)
     const [newColor, setNewColor] = useState("")
     const [selectedSeason, setSelectedSeason] = useState("")
-    const [selectedType, setSelectedType] = useState("")
+    const [types, setTypes] = useState([])
+    const [newType, setNewType] = useState("")
 
     useEffect(() => {
-        getAllColors(token)
-            .then(colors => {
-                setColors(colors)
-            })
+        getAllColors(token).then(setColors);
+        getAllTypes(token).then(setTypes);
+    }, [token]);
 
-    }, [article, token])
-
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        createArticle(article, token)
-            .then(() => {
-                navigate('/')
-            })
+        let color = colors.find(c => c.label.toLowerCase() === newColor.toLowerCase());
+        if (!color) {
+            try {
+                color = await createColor({ label: newColor }, token);
+                setColors([...colors, color]);
+            } catch (error) {
+                console.error('Error creating color:', error);
+                return; 
+            }
+        }
+
+        let type = types.find(t => t.label.toLowerCase() === newType.toLowerCase());
+        if (!type) {
+            try {
+                type = await createType({ label: newType }, token);
+                setTypes([...types, type]);
+            } catch (error) {
+                console.error('Error creating type:', error);
+                return; 
+            }
+        }
+
+        const articleData = {
+            ...article,
+            color: color.id,
+            season: selectedSeason,
+            type: type.id,
+        };
+
+        try {
+            await createArticle(articleData, token);
+            navigate('/');
+        } catch (error) {
+            console.error('Error creating article:', error);
+        }
     }
 
     const handleImageChange = (e) => { 
@@ -49,42 +76,37 @@ export const CreateArticleForm = ({ token }) => {
     return (
         <>
             <Form onSubmit={handleSubmit}>
+                <h2>Create Article</h2>
+                <Form.Label htmlFor="color">Color</Form.Label>
+                <br />
                 <FormControl>
-                <Autocomplete
-                    name="color"
-                    freeSolo
-                    value={selectedColor}
-                    onChange={(event, newValue) => {
-                        if (typeof newValue === 'string') {
-                            setSelectedColor({
-                                label: newValue,
-                            });
-                        } else if (newValue && newValue.inputValue) {
-                            setSelectedColor({
-                                label: newValue.inputValue,
-                            });
-                        } else {
-                            setSelectedColor(newValue);
-                        }
-                    }}
-                    inputValue={newColor}
-                    onInputChange={(event, newInputValue) => {
-                        setNewColor(newInputValue);
-                    }}
-                    options={colors}
-                    getOptionLabel={(option) => {
-                        return typeof option === 'string' ? option : option.label;
-                    }}
-                    style={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Color" variant="outlined" />}
-                />
+                    <Autocomplete 
+                        freeSolo
+                        onChange={(event, value) => {
+                            setArticle(prev => ({ ...prev, color: value ? value.label : "" }));
+                        }}
+                        value={colors}
+                        inputValue={newColor}
+                        onInputChange={(event, newInputValue) => {
+                            setNewColor(newInputValue);
+                        }}
+                        options={colors}
+                        getOptionLabel={(option) => option.label || ""}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Color" variant="outlined" />
+                            )}
+                        sx = {{ width: 300 }}
+                    />
                 </FormControl>
+                <br />
                 <FormControl>
                 <Select
                     name="season"
+                    label="Season"
                     onChange={e => setSelectedSeason(e.target.value)}
                     value={selectedSeason}
                     required
+                    sx={{ width: 300 }}
                 >
                     <MenuItem value="">Select a season</MenuItem>
                     <MenuItem value="spring">Spring</MenuItem>
@@ -93,21 +115,27 @@ export const CreateArticleForm = ({ token }) => {
                     <MenuItem value="winter">Winter</MenuItem>
                 </Select>
                 </FormControl>
+                <br />
                 <FormControl>
-                <Select
-                    name="type"
-                    onChange={e => setSelectedType(e.target.value)}
-                    value={selectedType}
-                    required
-                >
-                    <MenuItem value="">Select a type</MenuItem>
-                    <MenuItem value="top">Top</MenuItem>
-                    <MenuItem value="bottom">Bottom</MenuItem>
-                    <MenuItem value="shoes">Shoes</MenuItem>
-                    <MenuItem value="accessory">Accessory</MenuItem>
-                </Select>
+                    <Autocomplete 
+                        freeSolo
+                        onChange={(event, value) => {
+                            setArticle(prev => ({ ...prev, type: value ? value.label : "" }));
+                        }}
+                        value={types}
+                        inputValue={newType}
+                        onInputChange={(event, newInputValue) => {
+                            setNewType(newInputValue);
+                        }}
+                        options={types}
+                        getOptionLabel={(option) => option.label || ""}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Type" variant="outlined" />
+                            )}
+                        sx = {{ width: 300 }}
+                    />
                 </FormControl>
-                
+                <br />
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                     Upload File
                     <input
@@ -123,7 +151,7 @@ export const CreateArticleForm = ({ token }) => {
                     value={article.image}
                     required
                 />
-
+                <br />
                 <Button type="submit">Submit</Button>
             </Form>
         </>

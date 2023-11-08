@@ -8,3 +8,15 @@ export const getAllTypes = async (token) => {
     });
     return await response.json();
 }
+
+export const createType = async (type, token) => {
+    const response = await fetch(`${API_URL}/types`, {
+        method: 'POST',
+        body: JSON.stringify(type),
+        headers: {
+            Authorization: `Token ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    return await response.json();
+}
