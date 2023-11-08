@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createArticle } from "../../api/articleManager"
 import { createColor, getAllColors } from "../../api/colorManager"
-import { Autocomplete, Button, FormControl, MenuItem, Select, TextField } from "@mui/material"
+import { Autocomplete, Button, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material"
 import { Form } from "react-bootstrap"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { createType, getAllTypes } from "../../api/typeManager"
@@ -76,9 +76,9 @@ export const CreateArticleForm = ({ token }) => {
     return (
         <>
             <Form onSubmit={handleSubmit}>
+                <Stack direction="column" spacing={2}>
                 <h2>Create Article</h2>
                 <Form.Label htmlFor="color">Color</Form.Label>
-                <br />
                 <FormControl>
                     <Autocomplete 
                         freeSolo
@@ -98,7 +98,6 @@ export const CreateArticleForm = ({ token }) => {
                         sx = {{ width: 300 }}
                     />
                 </FormControl>
-                <br />
                 <FormControl>
                 <Select
                     name="season"
@@ -115,7 +114,6 @@ export const CreateArticleForm = ({ token }) => {
                     <MenuItem value="winter">Winter</MenuItem>
                 </Select>
                 </FormControl>
-                <br />
                 <FormControl>
                     <Autocomplete 
                         freeSolo
@@ -135,8 +133,7 @@ export const CreateArticleForm = ({ token }) => {
                         sx = {{ width: 300 }}
                     />
                 </FormControl>
-                <br />
-                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} sx={{ width: 170 }}>
                     Upload File
                     <input
                         type="file"
@@ -151,8 +148,8 @@ export const CreateArticleForm = ({ token }) => {
                     value={article.image}
                     required
                 />
-                <br />
                 <Button type="submit">Submit</Button>
+                </Stack>
             </Form>
         </>
     )

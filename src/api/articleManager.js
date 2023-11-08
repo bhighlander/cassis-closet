@@ -15,3 +15,12 @@ export const createArticle = async (article, token) => {
         }
     });
 }
+
+export const getAllArticles = async (token) => {
+    const response = await fetch(`${API_URL}/articles`, {
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+    return await response.json();
+}
