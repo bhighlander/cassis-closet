@@ -10,7 +10,7 @@ export const getAllColors = async (token) => {
 }
 
 export const createColor = async (color, token) => {
-    await fetch(`${API_URL}/colors`, {
+    const response = await fetch(`${API_URL}/colors`, {
         method: 'POST',
         body: JSON.stringify(color),
         headers: {
@@ -18,4 +18,5 @@ export const createColor = async (color, token) => {
             'Content-Type': 'application/json'
         }
     });
+    return await response.json();
 }
