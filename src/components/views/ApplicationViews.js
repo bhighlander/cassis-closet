@@ -5,6 +5,7 @@ import { Register } from "../auth/Register";
 import { CreateArticleForm } from "../forms/ArticleForm";
 import { UserHome } from "../../Home";
 import { ArticleList } from "../clothingArticles/ViewAllArticles";
+import { ArticleDetails } from "../clothingArticles/ArticleDetails";
 
 export const ApplicationViews = ({ token, setToken }) => {
     const navigate = useNavigate();
@@ -40,6 +41,7 @@ export const ApplicationViews = ({ token, setToken }) => {
             <Route path="/closet" element={<ArticleList token={token} setToken={setToken} />} />
             <Route path="/articles">
                 <Route path="create" element={<CreateArticleForm token={token} setToken={setToken} />} />
+                <Route path=":articleId" element={<ArticleDetails token={token} setToken={setToken} />} />
             </Route>
         </Routes>
         </>

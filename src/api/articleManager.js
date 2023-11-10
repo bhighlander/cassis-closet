@@ -24,3 +24,12 @@ export const getAllArticles = async (token) => {
     });
     return await response.json();
 }
+
+export const getArticleById = async (articleId, token) => {
+    const response = await fetch(`${API_URL}/articles/${articleId}`, {
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+    return await response.json();
+}
