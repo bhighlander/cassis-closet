@@ -3,7 +3,7 @@ import { Card, CardMedia } from "@mui/material"
 export const ArticleCard = ({ article }) => {
 
     return (
-        <Card className="articleCard" sx={{ height: 200, width: 200}}>
+        <Card className="articleCard">
             <CardMedia
             component="img"
             height="140"

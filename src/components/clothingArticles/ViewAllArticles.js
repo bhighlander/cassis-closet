@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { ArticleCard } from "./ArticleCard"
 import { getAllArticles } from "../../api/articleManager"
+import "./ArticleList.css"
 
 export const ArticleList = ({ token }) => {
     const [articles, setArticles] = useState([])

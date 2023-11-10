@@ -1,0 +1,15 @@
+.articleList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; 
+    gap: 10px; 
+}
+
+.articleCard {
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.articleCard img {
+    object-fit: cover;
+}
