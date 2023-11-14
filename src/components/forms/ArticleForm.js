@@ -139,15 +139,9 @@ export const CreateArticleForm = ({ token }) => {
                         type="file"
                         hidden
                         onChange={handleImageChange}
+                        required
                     />
                 </Button>
-
-                <FormControl
-                    name="image"
-                    onChange={handleImageChange}
-                    value={article.image}
-                    required
-                />
                 <Button type="submit">Submit</Button>
                 </Stack>
             </Form>

@@ -33,3 +33,12 @@ export const getArticleById = async (articleId, token) => {
     });
     return await response.json();
 }
+
+export const deleteArticle = async (articleId, token) => {
+    await fetch(`${API_URL}/articles/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+}
