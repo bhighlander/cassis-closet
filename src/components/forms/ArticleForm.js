@@ -71,15 +71,16 @@ export const CreateArticleForm = ({ token, articleObject }) => {
             }
         }
     
-        const articleData = {
-            ...article,
-            color: color.id,
+        let articleData = {
+            color: color ? color.id : undefined,
             season: selectedSeason,
-            type: type.id,
+            type: type ? type.id : undefined,
         };
 
         if (article.image instanceof File) {
             articleData.image = article.image;
+        } else {
+            articleData.image = undefined;
         }
     
         try {

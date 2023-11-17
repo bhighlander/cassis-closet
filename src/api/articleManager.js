@@ -45,7 +45,11 @@ export const deleteArticle = async (articleId, token) => {
 
 export const updateArticle = async (articleId, article, token) => {
     let formData = new FormData();
-    formData.append('image', article.image);
+
+    if (article.image instanceof File) {
+        formData.append('image', article.image);
+    }
+    
     formData.append('color', article.color);
     formData.append('season', article.season);
     formData.append('type', article.type);
@@ -54,7 +58,7 @@ export const updateArticle = async (articleId, article, token) => {
         method: 'PUT',
         body: formData,
         headers: {
-            'Authorization': `Token ${token}`
+            'Authorization': `Token ${token}`,
         }
     });
 }
