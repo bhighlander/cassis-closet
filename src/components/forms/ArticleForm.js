@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { createArticle } from "../../api/articleManager"
+import { createArticle, updateArticle } from "../../api/articleManager"
 import { createColor, getAllColors } from "../../api/colorManager"
 import { Autocomplete, Button, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material"
 import { Form } from "react-bootstrap"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { createType, getAllTypes } from "../../api/typeManager"
 
-export const CreateArticleForm = ({ token }) => {
+const initialState = {
+    color: "",
+    season: "",
+    type: "",
+    image: null,
+}
+
+export const CreateArticleForm = ({ token, articleObject }) => {
     const navigate = useNavigate()
-    const [article, setArticle] = useState({
-        color: "",
-        season: "",
-        type: "",
-        image: null,
-    })
+    const [article, setArticle] = useState({ ...initialState, ...articleObject })
     const [colors, setColors] = useState([])
     const [newColor, setNewColor] = useState("")
+    const [selectedColor, setSelectedColor] = useState("")
     const [selectedSeason, setSelectedSeason] = useState("")
     const [types, setTypes] = useState([])
+    const [selectedType, setSelectedType] = useState("")
     const [newType, setNewType] = useState("")
 
     useEffect(() => {
@@ -26,9 +30,25 @@ export const CreateArticleForm = ({ token }) => {
         getAllTypes(token).then(setTypes);
     }, [token]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    useEffect(() => {
+        if (articleObject && articleObject.id) {
+            setArticle(articleObject);
+            setSelectedColor(articleObject.color.label);
+            setSelectedSeason(articleObject.season);
+            setSelectedType(articleObject.type.label);
+        } else {
+            // Reset to initial state if creating a new article
+            setArticle(initialState);
+            setSelectedColor('');
+            setSelectedSeason('');
+            setSelectedType('');
+        }
+    }, [articleObject]);
+    
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
         let color = colors.find(c => c.label.toLowerCase() === newColor.toLowerCase());
         if (!color) {
             try {
@@ -39,7 +59,7 @@ export const CreateArticleForm = ({ token }) => {
                 return; 
             }
         }
-
+    
         let type = types.find(t => t.label.toLowerCase() === newType.toLowerCase());
         if (!type) {
             try {
@@ -50,21 +70,33 @@ export const CreateArticleForm = ({ token }) => {
                 return; 
             }
         }
-
-        const articleData = {
-            ...article,
-            color: color.id,
+    
+        let articleData = {
+            color: color ? color.id : undefined,
             season: selectedSeason,
-            type: type.id,
+            type: type ? type.id : undefined,
         };
 
+        if (article.image instanceof File) {
+            articleData.image = article.image;
+        } else {
+            articleData.image = undefined;
+        }
+    
         try {
-            await createArticle(articleData, token);
+            if (article.id) {
+                await updateArticle(article.id, articleData, token);
+                console.log('Article updated successfully');
+            } else {
+                await createArticle(articleData, token);
+                console.log('Article created successfully');
+            }
             navigate('/');
         } catch (error) {
-            console.error('Error creating article:', error);
+            console.error('Error saving article:', error);
         }
     }
+    
 
     const handleImageChange = (e) => { 
         setArticle(prevState => ({
@@ -77,15 +109,14 @@ export const CreateArticleForm = ({ token }) => {
         <>
             <Form onSubmit={handleSubmit}>
                 <Stack direction="column" spacing={2}>
-                <h2>Create Article</h2>
-                <Form.Label htmlFor="color">Color</Form.Label>
+                {article.id ? <h2>Edit Article</h2> : <h2>Create Article</h2>}
                 <FormControl>
                     <Autocomplete 
                         freeSolo
                         onChange={(event, value) => {
                             setArticle(prev => ({ ...prev, color: value ? value.label : "" }));
                         }}
-                        value={colors}
+                        value={colors.find(c => c.label === selectedColor) || null}
                         inputValue={newColor}
                         onInputChange={(event, newInputValue) => {
                             setNewColor(newInputValue);
@@ -120,7 +151,7 @@ export const CreateArticleForm = ({ token }) => {
                         onChange={(event, value) => {
                             setArticle(prev => ({ ...prev, type: value ? value.label : "" }));
                         }}
-                        value={types}
+                        value={types.find(t => t.label === selectedType) || null}
                         inputValue={newType}
                         onInputChange={(event, newInputValue) => {
                             setNewType(newInputValue);
@@ -139,10 +170,11 @@ export const CreateArticleForm = ({ token }) => {
                         type="file"
                         hidden
                         onChange={handleImageChange}
-                        required
                     />
                 </Button>
-                <Button type="submit">Submit</Button>
+                <Button type="submit">
+                    {article.id ? <span>Update</span> : <span>Submit</span>}
+                </Button>
                 </Stack>
             </Form>
         </>
