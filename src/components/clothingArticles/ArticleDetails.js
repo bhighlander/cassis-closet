@@ -25,6 +25,10 @@ export const ArticleDetails = ({ token }) => {
         setDeleteArticleModal(false)
     }
 
+    const handleEditArticle = () => {
+        navigate(`/articles/edit-article/${article.id}`, { state: { article } })
+    }
+
     useEffect(() => {
         getArticleById(articleId, token)
             .then(article => setArticle(article))
@@ -37,6 +41,7 @@ export const ArticleDetails = ({ token }) => {
             <h2>{article.season}</h2>
             {article.color && <h2>{article.color.label}</h2>}
             {article.type && <h2>{article.type.label}</h2>}
+            <Button variant="primary" onClick={handleEditArticle}>Edit</Button>
             <Button variant="warning" onClick={handleDeleteArticle}>Delete</Button>
         </div>
         <Dialog open={deleteArticleModal} onClose={() => handleDeleteArticleModalClose(false)}>
