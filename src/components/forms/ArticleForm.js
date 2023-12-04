@@ -14,7 +14,7 @@ const initialState = {
     image: null,
 }
 
-export const CreateArticleForm = ({ token, articleObject }) => {
+export const ArticleForm = ({ token, articleObject }) => {
     const navigate = useNavigate()
     const [article, setArticle] = useState({ ...initialState, ...articleObject })
     const [colors, setColors] = useState([])
