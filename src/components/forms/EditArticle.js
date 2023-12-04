@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { getArticleById } from "../../api/articleManager"
-import { CreateArticleForm } from "./ArticleForm"
+import { ArticleForm } from "./ArticleForm"
 import { useParams } from "react-router-dom"
 
 export const EditArticleForm = ({ token }) => {
@@ -15,7 +15,7 @@ export const EditArticleForm = ({ token }) => {
 
     return (
         <>
-        <CreateArticleForm token={token} articleObject={article} />
+        <ArticleForm token={token} articleObject={article} />
         </>
     )
 }

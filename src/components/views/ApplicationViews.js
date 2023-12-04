@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom"
 import { Login } from "../auth/Login";
 import { Register } from "../auth/Register";
-import { CreateArticleForm } from "../forms/ArticleForm";
+import { ArticleForm } from "../forms/ArticleForm";
 import { UserHome } from "../../Home";
 import { ArticleList } from "../clothingArticles/ViewAllArticles";
 import { ArticleDetails } from "../clothingArticles/ArticleDetails";
 import { EditArticleForm } from "../forms/EditArticle";
+import { OutfitForm } from "../forms/OutfitForm";
 
 export const ApplicationViews = ({ token, setToken }) => {
     const navigate = useNavigate();
@@ -41,9 +42,12 @@ export const ApplicationViews = ({ token, setToken }) => {
             </Route>
             <Route path="/closet" element={<ArticleList token={token} setToken={setToken} />} />
             <Route path="/articles">
-                <Route path="create" element={<CreateArticleForm token={token} setToken={setToken} />} />
+                <Route path="create" element={<ArticleForm token={token} setToken={setToken} />} />
                 <Route path="edit-article/:articleId" element={<EditArticleForm token={token} setToken={setToken} />} />
                 <Route path=":articleId" element={<ArticleDetails token={token} setToken={setToken} />} />
+            </Route>
+            <Route path="/outfits">
+                <Route path="create" element={<OutfitForm token={token} setToken={setToken} />} />
             </Route>
         </Routes>
         </>
