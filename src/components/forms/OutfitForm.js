@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Form } from 'react-bootstrap'
 import { getAllArticles } from '../../api/articleManager'
 import { createColor, getAllColors } from '../../api/colorManager'
+import { createOutfit } from '../../api/outfitManager'
 
 const initialState = {
     color: "",
@@ -41,6 +42,15 @@ export const OutfitForm = ({ token, outfitObject }) => {
     }
     , [outfit])
 
+    const handleArticleSelection = (articleId) => {
+        setSelectedArticles(prev => {
+            const newSelected = prev.includes(articleId) ? prev.filter(id => id !== articleId) : [...prev, articleId];
+            console.log("Selected Articles:", newSelected);
+            return newSelected;
+        });
+    }
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -55,11 +65,17 @@ export const OutfitForm = ({ token, outfitObject }) => {
             }
         }
 
-        let articleIds = selectedArticles.map(a => a.id);
-        let outfitObject = {
-            color: color.label,
+        let outfitData = {
+            color: color ? color.id : undefined,
             season: selectedSeason,
-            articleIds: articleIds
+            articles: selectedArticles,
+        }
+
+        try {
+            await createOutfit(outfitData, token);
+            navigate('/outfits');
+        } catch (error) {
+            console.error('Error creating outfit:', error);
         }
     }
 
@@ -69,17 +85,25 @@ export const OutfitForm = ({ token, outfitObject }) => {
         <Stack>
             <h1>Outfit Form</h1>
             <div className="articleList">
-            {articles?.map(article =>
-                <Card className="articleCard" key={article.id}>
-                    <CardMedia
-                    component="img"
-                    height="140"
-                    image={article.image}
-                    alt={article.type}
-                    />
-                </Card>
-                )}
-        </div>
+                        {articles?.map(article => {
+                            const isSelected = selectedArticles.includes(article.id);
+                            return (
+                                <Card 
+                                    className={`articleCard ${isSelected ? 'selected' : ''}`}
+                                    key={article.id}
+                                    onClick={() => handleArticleSelection(article.id)}
+                                    style={{ border: isSelected ? '2px solid blue' : '' }}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        height="140"
+                                        image={article.image}
+                                        alt={article.type}
+                                    />
+                                </Card>
+                            );
+                        })}
+                    </div>
         <FormControl>
                     <Autocomplete 
                         freeSolo
