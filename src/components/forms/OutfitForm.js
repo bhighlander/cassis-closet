@@ -44,13 +44,12 @@ export const OutfitForm = ({ token, outfitObject }) => {
 
     const handleArticleSelection = (articleId) => {
         setSelectedArticles(prev => {
-            if (prev.includes(articleId)) {
-                return prev.filter(id => id !== articleId);
-            } else {
-                return [...prev, articleId];
-            }
+            const newSelected = prev.includes(articleId) ? prev.filter(id => id !== articleId) : [...prev, articleId];
+            console.log("Selected Articles:", newSelected);
+            return newSelected;
         });
     }
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,11 +65,10 @@ export const OutfitForm = ({ token, outfitObject }) => {
             }
         }
 
-        let articleIds = selectedArticles.map(a => a.id);
         let outfitData = {
             color: color ? color.id : undefined,
             season: selectedSeason,
-            articleIds: articleIds
+            articles: selectedArticles,
         }
 
         try {
