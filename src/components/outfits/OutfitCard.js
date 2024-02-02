@@ -10,7 +10,7 @@ export const OutfitCard = ({ outfit }) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((currentImage + 1) % images.length);
-        }, 1000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [currentImage, images.length]);
