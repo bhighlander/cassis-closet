@@ -14,7 +14,7 @@ export const OutfitDetails = ({ token }) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((currentImage + 1) % images.length);
-        }, 1000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [currentImage, images.length]);
@@ -36,7 +36,7 @@ export const OutfitDetails = ({ token }) => {
     }
 
     const handleEditOutfit = () => {
-        navigate(`/outfit/edit-outfit/${outfit.id}`, { state: { outfit } })
+        navigate(`/outfits/edit-outfit/${outfit.id}`, { state: { outfit } })
     }
 
     useEffect(() => {
@@ -47,7 +47,7 @@ export const OutfitDetails = ({ token }) => {
     return (
         <>
         <div className="outfitDetails">
-            <img src={images[currentImage]} alt="Clothing Articles" />
+            <img src={images[currentImage]} alt="Clothing Articles" width={300} />
             <h2>{outfit.season}</h2>
             {outfit.color && <h2>{outfit.color.label}</h2>}
             <Button variant="primary" onClick={handleEditOutfit}>Edit</Button>

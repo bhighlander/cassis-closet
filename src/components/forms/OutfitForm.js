@@ -30,17 +30,19 @@ export const OutfitForm = ({ token, outfitObject }) => {
     , [token])
 
     useEffect(() => {
-        if (outfit && outfit.id) {
-            setOutfit(outfit);
-            setSelectedColor(outfit.color);
-            setSelectedSeason(outfit.season);
+        if (outfitObject && outfitObject.id) {
+            setOutfit(outfitObject);
+            setSelectedColor(outfitObject.color.label);
+            setSelectedSeason(outfitObject.season);
+            setSelectedArticles(outfitObject.articles.map(article => article.id));
         } else {
             setOutfit(initialState);
             setSelectedColor('');
             setSelectedSeason('');
+            setSelectedArticles([]);
         }
     }
-    , [outfit])
+    , [outfitObject])
 
     const handleArticleSelection = (articleId) => {
         setSelectedArticles(prev => {
@@ -81,8 +83,8 @@ export const OutfitForm = ({ token, outfitObject }) => {
     return (
         <>
         <Form onSubmit={handleSubmit}>
-        <Stack>
-            <h1>Outfit Form</h1>
+        <Stack direction="column" spacing={2}>
+                {outfit.id ? <h2>Edit Outfit</h2> : <h2>Create Outfit</h2>}
             <div className="articleList">
                         {articles?.map(article => {
                             const isSelected = selectedArticles.includes(article.id);

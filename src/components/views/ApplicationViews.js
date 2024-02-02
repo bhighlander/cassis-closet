@@ -7,6 +7,7 @@ import { UserHome } from "../../Home";
 import { ArticleList } from "../clothingArticles/ViewAllArticles";
 import { ArticleDetails } from "../clothingArticles/ArticleDetails";
 import { EditArticleForm } from "../forms/EditArticle";
+import { EditOutfitForm } from "../forms/EditOutfit";
 import { OutfitForm } from "../forms/OutfitForm";
 import { OutfitList } from "../outfits/ViewAllOutfits";
 import { OutfitDetails } from "../outfits/OutfitDetails";
@@ -50,7 +51,7 @@ export const ApplicationViews = ({ token, setToken }) => {
             </Route>
             <Route path="outfits" element={<OutfitList token={token} setToken={setToken} />} />
             <Route path="outfits/:outfitId" element={<OutfitDetails token={token} setToken={setToken} />} />
-            <Route path="outfits/edit-outfit/:outfitId" element={<OutfitForm token={token} setToken={setToken} />} />
+            <Route path="outfits/edit-outfit/:outfitId" element={<EditOutfitForm token={token} setToken={setToken} />} />
             <Route path="outfits/create" element={<OutfitForm token={token} setToken={setToken} />} />
         </Routes>
         </>

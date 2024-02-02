@@ -37,3 +37,15 @@ export const deleteOutfit = async (outfitId, token) => {
         }
     });
 }
+
+export const updateOutfit = async (outfit, token) => {
+    await fetch(`${API_URL}/outfits/${outfit.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        },
+        body: JSON.stringify(outfit)
+
+    });
+};
