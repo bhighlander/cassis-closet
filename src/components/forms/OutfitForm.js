@@ -49,7 +49,6 @@ export const OutfitForm = ({ token, outfitObject }) => {
             return newSelected;
         });
     }
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
